@@ -1,4 +1,3 @@
-# git@github.com:KaszubaMarek/calculator-for-resistors-and-capacitors.git
 from tkinter.messagebox import showinfo
 import tkinter.messagebox
 import tkinter as tk
