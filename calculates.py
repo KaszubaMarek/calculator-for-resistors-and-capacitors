@@ -10,11 +10,12 @@ TOLERANCE_COLORS = {'Brown': 1, 'Red': 2, 'Green': 0.5, 'Blue': 0.25, 'Violet': 
                     'Grey': 0.05, 'Gold': 5, 'Silver': 0.05, 'No color': 20}
 
 
-def resistance_calculation(selected_bands) -> str:
+def resistance_calculation(selected_bands: dict) -> str:
     if selected_bands['third_digit'] == 'No band':
         # resistor have 4 band code
         resistance: float = (BANDS_COLORS[selected_bands['first_digit']][0] * 10 +
-                             BANDS_COLORS[selected_bands['second_digit']][0] * 1) * 10 ** BANDS_COLORS[selected_bands['multiplier']][0]
+                             BANDS_COLORS[selected_bands['second_digit']][0] * 1) \
+                            * 10 ** BANDS_COLORS[selected_bands['multiplier']][0]
         tolerance_value: str = str(TOLERANCE_COLORS[selected_bands['tolerance']]) + '%'
         print('4 band code')
         result = weight_determination(resistance)
@@ -23,8 +24,9 @@ def resistance_calculation(selected_bands) -> str:
     else:
         # resistor have 5 band code
         resistance: float = (BANDS_COLORS[selected_bands['first_digit']][0] * 100 +
-                         BANDS_COLORS[selected_bands['second_digit']][0] * 10 +
-                         BANDS_COLORS[selected_bands['third_digit']][0] * 1) * 10 ** BANDS_COLORS[selected_bands['multiplier']][0]
+                             BANDS_COLORS[selected_bands['second_digit']][0] * 10 +
+                             BANDS_COLORS[selected_bands['third_digit']][0] * 1) \
+                            * 10 ** BANDS_COLORS[selected_bands['multiplier']][0]
         tolerance_value: str = str(TOLERANCE_COLORS[selected_bands['tolerance']]) + '%'
         print('5 band code')
         result = weight_determination(resistance)
