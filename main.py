@@ -1,9 +1,8 @@
-# git@github.com:KaszubaMarek/calculator-for-resistors-and-capacitors.git
-from tkinter.messagebox import showinfo
 import tkinter.messagebox
 import tkinter as tk
 import customtkinter as ctk
 import calculates
+import re
 
 ctk.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -176,7 +175,10 @@ class FrameTHT(ctk.CTkFrame):
         self.select_code_frame.grid(column=0, row=3, columnspan=2, padx=10, pady=(20, 5), sticky=ctk.W)
 
         # Create label with name for code frame
-        self.sc_frame_name = ctk.CTkLabel(self.select_code_frame, text='Select number of bands', font=('Ubuntu Light', 12, 'bold'))
+        self.sc_frame_name = ctk.CTkLabel(self.select_code_frame,
+                                          text='Select number of bands',
+                                          font=('Ubuntu Light', 12, 'bold')
+                                          )
         self.sc_frame_name.grid(column=0, row=0, padx=10)
 
         # Create radiobutton-s in code frame
@@ -217,17 +219,15 @@ class FrameTHT(ctk.CTkFrame):
                                          text='',
                                          width=400
                                          )
-        self.result_label.grid(column=1, row=1, sticky=ctk.E)
+        self.result_label.grid(column=1, row=0, rowspan=2, stick=ctk.NS, pady=20)
 
-        for widget in self.winfo_children():
-            widget.grid(padx=14)
+        # for widget in self.winfo_children():
+        #     widget.grid(padx=14)
 
     def button_action(self):
 
         if self.selected_code == '4':
             if len(self.selected_colors) < 4:
-                # showinfo(title='Error',
-                #          message='You must select colours for all activ bands!')
                 app.create_toplevel(text='You must select colours\nfor all activ bands!')
             else:
                 result: str = calculates.resistance_calculation(self.selected_colors)
@@ -235,11 +235,10 @@ class FrameTHT(ctk.CTkFrame):
                 self.result_label.configure(text=result)
         else:
             if len(self.selected_colors) < 5:
-                # showinfo(title='Error',
-                #          message='You must select colours for all activ bands!')
                 app.create_toplevel(text='You must select colours\nfor all activ bands!')
             else:
                 result: str = calculates.resistance_calculation(self.selected_colors)
+
                 # update result label
                 self.result_label.configure(text=result)
 
@@ -278,63 +277,63 @@ class FrameSMD(ctk.CTkFrame):
         super().__init__(container, height=270, width=500, corner_radius=10)
 
         # Create label widget with frame's name
-        frames_name = ctk.CTkLabel(self, text='SMD Resistors', font=('Ubuntu Light', 12))
-        frames_name.grid(column=0, row=0, sticky=ctk.SW, padx=10)
+        self.frames_name = ctk.CTkLabel(self, text='SMD Resistors', font=('Ubuntu Light', 12))
+        self.frames_name.grid(column=0, row=0, sticky=ctk.SW, padx=10)
 
         # create label widget for entry widget
-        label = ctk.CTkLabel(self, text='Insert code resistor', font=('Ubuntu Light', 18))
-        label.grid(column=0, row=1, pady=10, padx=10, sticky=ctk.W)
+        self.label = ctk.CTkLabel(self, text='Enter resistor code', font=('Ubuntu Light', 18))
+        self.label.grid(column=0, row=1, pady=10, padx=20, sticky=ctk.W)
 
         # create entry widget
-        code = tk.StringVar()
-        code_entry = ctk.CTkEntry(self,
-                                  textvariable=code,
-                                  height=35,
-                                  fg_color='white',
-                                  text_color='black',
-                                  font=('Ubuntu Light', 18),
-                                  corner_radius=10,
-                                  width=130
-                                  )
-        code_entry.grid(column=1, row=1, padx=10, pady=10, stick=ctk.E)
+        self.code = tk.StringVar()
+        self.code_entry = ctk.CTkEntry(self,
+                                       textvariable=self.code,
+                                       height=35,
+                                       fg_color='white',
+                                       text_color='black',
+                                       font=('Ubuntu Light', 18),
+                                       corner_radius=10,
+                                       width=130
+                                       )
+        self.code_entry.grid(column=1, row=1, padx=10, pady=10, stick=ctk.E)
 
         # create frame widget for selecting code
-        frame_code_selection = ctk.CTkFrame(self, fg_color='#242424', corner_radius=15, height=90, width=470)
-        frame_code_selection.grid_propagate(False)
-        frame_code_selection.grid(column=0, row=2, pady=10, padx=10, ipady=5, ipadx=5, columnspan=3, sticky=ctk.W)
+        self.frame_code_selection = ctk.CTkFrame(self, fg_color='#242424', corner_radius=15, height=90, width=470)
+        self.frame_code_selection.grid_propagate(False)
+        self.frame_code_selection.grid(column=0, row=2, pady=10, padx=10, ipady=5, ipadx=5, columnspan=3, sticky=ctk.W)
 
         # create label widget with frame code selection name
-        self.sc_frame_name = ctk.CTkLabel(frame_code_selection, text='Select code type',
+        self.sc_frame_name = ctk.CTkLabel(self.frame_code_selection, text='Select code type',
                                           font=('Ubuntu Light', 12, 'bold'))
         self.sc_frame_name.grid(column=0, row=0, padx=10)
 
         # Create radiobutton-s
-        selected = tk.StringVar()
-        selected.set('3 numbers code')
-        code_3_numbers = ctk.CTkRadioButton(frame_code_selection,
-                                            text='3 numbers',
-                                            value='3 numbers code',
-                                            variable=selected
-                                            )
-        code_3_numbers.grid(column=0, row=1, padx=(0, 5), pady=(20, 30))
-        code_4_numbers = ctk.CTkRadioButton(frame_code_selection,
-                                            text='4 numbers',
-                                            value='4 numbers code',
-                                            variable=selected,
-                                            )
-        code_4_numbers.grid(column=1, row=1, padx=(5, 5), pady=(20, 30))
-        code_eia96 = ctk.CTkRadioButton(frame_code_selection,
-                                        text='EIA96',
-                                        value='EIA96 code',
-                                        variable=selected,
-                                     )
-        code_eia96.grid(column=2, row=1, padx=(5, 5), pady=(20, 30))
-        code_below_10 = ctk.CTkRadioButton(frame_code_selection,
-                                           text='below 10Ω',
-                                           value='below 10',
-                                           variable=selected,
-                                           )
-        code_below_10.grid(column=3, row=1, padx=5, pady=(20, 30))
+        self.selected = tk.StringVar()
+        self.selected.set('3 numbers code')
+        self.code_3_numbers = ctk.CTkRadioButton(self.frame_code_selection,
+                                                 text='3 numbers',
+                                                 value='3 numbers code',
+                                                 variable=self.selected
+                                                 )
+        self.code_3_numbers.grid(column=0, row=1, padx=(0, 5), pady=(20, 30))
+        self.code_4_numbers = ctk.CTkRadioButton(self.frame_code_selection,
+                                                 text='4 numbers',
+                                                 value='4 numbers code',
+                                                 variable=self.selected,
+                                                 )
+        self.code_4_numbers.grid(column=1, row=1, padx=(5, 5), pady=(20, 30))
+        self.code_eia96 = ctk.CTkRadioButton(self.frame_code_selection,
+                                             text='EIA96',
+                                             value='EIA96 code',
+                                             variable=self.selected,
+                                             )
+        self.code_eia96.grid(column=2, row=1, padx=(5, 5), pady=(20, 30))
+        self.code_below_10 = ctk.CTkRadioButton(self.frame_code_selection,
+                                                text='below 10Ω',
+                                                value='below 10',
+                                                variable=self.selected,
+                                                )
+        self.code_below_10.grid(column=3, row=1, padx=5, pady=(20, 30))
 
         # Create result frame
         self.result_frame = ctk.CTkFrame(self, fg_color='#255B12', corner_radius=10, height=50, width=330)
@@ -363,8 +362,54 @@ class FrameSMD(ctk.CTkFrame):
                                          corner_radius=10,
                                          width=120,
                                          height=50,
+                                         command=self.button_action
                                          )
         self.button_calc.grid(column=2, row=3, padx=10, pady=10, sticky=ctk.E)
+
+    def button_action(self):
+
+        entry_value = self.code.get()
+
+        pattern_eia69_2 = r"^([A-FSRXY]|[a-fsrxy])((9[0-6])|([0-8][0-6]))\b"
+        pattern_eia69_1 = r"^((60)|([0-5][0-9]))([A-FSRXY]|[a-fsrxy])\b"
+        pattern_4_num = r"^[1-9][0-9][0-9][0-9]\b"
+        pattern_3_num = r"^[1-9][0-9][0-9]\b"
+        pattern_below_10 = r"([0-9][Rr][0-9][0-9]\b)|([0-9][Rr][0-9]\b)"
+
+        if self.selected.get() == '3 numbers code':
+            regex_result = re.match(pattern_3_num, entry_value)
+            if regex_result:
+                result = calculates.smd_3_numb_code_calc(entry_value)
+                self.result_label.configure(text=result)
+            else:
+                app.create_toplevel(text='Entered value is incorrect')
+
+        elif self.selected.get() == '4 numbers code':
+            regex_result = re.match(pattern_4_num, entry_value)
+            if regex_result:
+                result = calculates.smd_4_numb_code_calc(entry_value)
+                self.result_label.configure(text=result)
+            else:
+                app.create_toplevel(text='Entered value is incorrect')
+
+        elif self.selected.get() == 'below 10':
+            regex_result = re.match(pattern_below_10, entry_value)
+            if regex_result:
+                result = calculates.smd_below_10_ohm_calc(entry_value)
+                self.result_label.configure(text=result)
+            else:
+                app.create_toplevel(text='Entered value is incorrect')
+
+        elif self.selected.get() == 'EIA96 code':
+            regex_result_1 = re.match(pattern_eia69_1, entry_value)
+            regex_result_2 = re.match(pattern_eia69_2, entry_value)
+            if regex_result_1 or regex_result_2:
+                result = calculates.smd_eia96_calc(entry_value)
+                self.result_label.configure(text=result)
+            else:
+                app.create_toplevel(text='Entered value is incorrect')
+
+
 
 
 class FrameCapacitor(ctk.CTkFrame):
