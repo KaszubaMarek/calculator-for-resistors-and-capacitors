@@ -53,18 +53,20 @@ def weight_determination(value: float) -> str:
         return str(value) + ' Ω  '
 
 
-def smd_3_numb_code_calc(entry_value: str) -> tuple:
+def smd_3_numb_code_calc(entry_value: str) -> str:
     value = int(entry_value[:2])
     multiplier = int(entry_value[2])
-    result = value * 10 ** multiplier
-    return result, '5%'
+    resistance = value * 10 ** multiplier
+    result = weight_determination(resistance)
+    return result + '5%'
 
 
-def smd_4_numb_code_calc(entry_value: str) -> tuple:
+def smd_4_numb_code_calc(entry_value: str) -> str:
     value = int(entry_value[:3])
     multiplier = int(entry_value[3])
-    result = value * 10 ** multiplier
-    return result, '1%'
+    resistance = value * 10 ** multiplier
+    result = weight_determination(resistance)
+    return result + '1%'
 
 
 def smd_below_10_ohm_calc(entry_value: str) -> str:
@@ -76,7 +78,7 @@ def smd_below_10_ohm_calc(entry_value: str) -> str:
     return str(result) + ' Ω  ' + tolerance
 
 
-def smd_eia96_calc(entry_value: str) -> tuple:
+def smd_eia96_calc(entry_value: str) -> str:
     multipliers = {
         'Z': 0.001,
         'Y': 0.01,
@@ -126,7 +128,8 @@ def smd_eia96_calc(entry_value: str) -> tuple:
         if position == 0:
             value: int = values_2_5_10_percent[entry_value[1:]]
             multiplier: int = multipliers[entry_value[0]]
-            result = value * multiplier
+            resistance = value * multiplier
+            result = weight_determination(resistance)
             if int(entry_value[1:]) < 25:
                 tolerance: str = '2%'
             elif int(entry_value[1:]) < 49:
@@ -134,15 +137,16 @@ def smd_eia96_calc(entry_value: str) -> tuple:
             else:
                 tolerance = '10%'
 
-            return result, tolerance
+            return result + tolerance
 
         elif position == 2:
             value: int = values_1_percent[entry_value[:2]]
             multiplier: int = multipliers[entry_value[2]]
-            result = value * multiplier
+            resistance = value * multiplier
+            result = weight_determination(resistance)
             tolerance: str = '1%'
 
-            return result, tolerance
+            return result + tolerance
 
 
 def capacitors_calc(entry_value: str) -> str:
