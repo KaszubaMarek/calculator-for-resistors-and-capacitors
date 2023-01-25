@@ -274,7 +274,7 @@ class FrameTHT(ctk.CTkFrame):
 
 class FrameSMD(ctk.CTkFrame):
     def __init__(self, container):
-        super().__init__(container, height=270, width=500, corner_radius=10)
+        super().__init__(container, height=290, width=500, corner_radius=10)
 
         # Create label widget with frame's name
         self.frames_name = ctk.CTkLabel(self, text='SMD Resistors', font=('Ubuntu Light', 12))
@@ -336,7 +336,7 @@ class FrameSMD(ctk.CTkFrame):
         self.code_below_10.grid(column=3, row=1, padx=5, pady=(20, 30))
 
         # Create result frame
-        self.result_frame = ctk.CTkFrame(self, fg_color='#255B12', corner_radius=10, height=50, width=330)
+        self.result_frame = ctk.CTkFrame(self, fg_color='#255B12', corner_radius=10, height=70, width=330)
         self.result_frame.grid_propagate(False)
         self.result_frame.grid(column=0, row=3, padx=10, pady=(5, 5), columnspan=2, sticky=ctk.W)
 
@@ -355,7 +355,7 @@ class FrameSMD(ctk.CTkFrame):
                                          )
         self.result_label.grid(column=1, row=1, sticky=ctk.E)
 
-        # Button calculation for THT resistors
+        # Button calculation for SMD resistors
         self.button_calc = ctk.CTkButton(self,
                                          text='Calculate',
                                          font=('Ubuntu Light', 17, 'bold'),
@@ -364,7 +364,7 @@ class FrameSMD(ctk.CTkFrame):
                                          height=50,
                                          command=self.button_action
                                          )
-        self.button_calc.grid(column=2, row=3, padx=10, pady=10, sticky=ctk.E)
+        self.button_calc.grid(column=2, row=3, padx=10, pady=5, sticky=ctk.SE)
 
     def button_action(self):
 
@@ -410,25 +410,64 @@ class FrameSMD(ctk.CTkFrame):
                 app.create_toplevel(text='Entered value is incorrect')
 
 
-
-
 class FrameCapacitor(ctk.CTkFrame):
     def __init__(self, container):
-        super().__init__(container, height=270, width=440, corner_radius=10)
+        super().__init__(container, height=290, width=440, corner_radius=10)
 
-        # Create label with name for
+        # Create label with name for Capacitor's frame
         frames_name = ctk.CTkLabel(self, text='Capacitors', font=('Ubuntu Light', 12))
         frames_name.grid(column=0, row=0, sticky=tkinter.SW, padx=10)
 
-        # # create label for entry widget
-        # label_code_selection = ttk.LabelFrame(frame_smd, text='Select code type')
-        # label_code_selection.grid(column=0, row=1, columnspan=4, pady=5, padx=5, ipady=5, ipadx=5)
-        #
-        # # Create Entry Widget
-        #
-        # code = ctk.StringVar()
-        # code_entry = ctk.CTkEntry(self, textvariable=code)
-        # code_entry.grid(column=1, row=0, padx=30, pady=10, columnspan=3, sticky=tk.W)
+        # create label widget for entry widget
+        self.label = ctk.CTkLabel(self, text='Enter resistor code', font=('Ubuntu Light', 18))
+        self.label.grid(column=0, row=1, pady=10, padx=20, sticky=ctk.W)
+
+        # create entry widget
+        self.code = tk.StringVar()
+        self.code_entry = ctk.CTkEntry(self,
+                                       textvariable=self.code,
+                                       height=35,
+                                       fg_color='white',
+                                       text_color='black',
+                                       font=('Ubuntu Light', 18),
+                                       corner_radius=10,
+                                       width=130
+                                       )
+        self.code_entry.grid(column=1, row=1, padx=10, pady=10, stick=ctk.E)
+
+        # Create result frame
+        self.result_frame = ctk.CTkFrame(self, fg_color='#255B12', corner_radius=10, height=70, width=425)
+        self.result_frame.grid_propagate(False)
+        self.result_frame.grid(column=0, row=3, padx=10, pady=(5, 5), columnspan=2, sticky=ctk.S)
+
+        # create label with result frame name
+        self.result_frame_name = ctk.CTkLabel(self.result_frame,
+                                              text='Result',
+                                              font=('Ubuntu Light', 17, 'bold')
+                                              )
+        self.result_frame_name.grid(column=0, row=0, padx=10, sticky=ctk.W)
+
+        # Create label with result
+        self.result_label = ctk.CTkLabel(self.result_frame,
+                                         font=('Ubuntu Light', 18, 'bold'),
+                                         text='',
+                                         width=50
+                                         )
+        self.result_label.grid(column=1, row=1, sticky=ctk.E)
+
+        # Button calculation for SMD resistors
+        self.button_calc = ctk.CTkButton(self,
+                                         text='Calculate',
+                                         font=('Ubuntu Light', 17, 'bold'),
+                                         corner_radius=10,
+                                         width=120,
+                                         height=50,
+                                         command=self.button_action
+                                         )
+        self.button_calc.grid(column=1, row=2, padx=10, pady=(68, 5), sticky=ctk.SE)
+
+    def button_action(self):
+        ...
 
 
 if __name__ == "__main__":
