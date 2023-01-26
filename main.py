@@ -285,17 +285,17 @@ class FrameSMD(ctk.CTkFrame):
         self.label.grid(column=0, row=1, pady=10, padx=20, sticky=ctk.W)
 
         # create entry widget
-        self.code = tk.StringVar()
         self.code_entry = ctk.CTkEntry(self,
-                                       textvariable=self.code,
                                        height=35,
                                        fg_color='white',
                                        text_color='black',
                                        font=('Ubuntu Light', 18),
                                        corner_radius=10,
-                                       width=130
+                                       width=180,
+                                       placeholder_text='e.g.: 102',
+                                       placeholder_text_color='light grey'
                                        )
-        self.code_entry.grid(column=1, row=1, padx=10, pady=10, stick=ctk.E)
+        self.code_entry.grid(column=1, row=1, padx=10, pady=10, columnspan=2, stick=ctk.E)
 
         # create frame widget for selecting code
         self.frame_code_selection = ctk.CTkFrame(self, fg_color='#242424', corner_radius=15, height=90, width=470)
@@ -313,25 +313,29 @@ class FrameSMD(ctk.CTkFrame):
         self.code_3_numbers = ctk.CTkRadioButton(self.frame_code_selection,
                                                  text='3 numbers',
                                                  value='3 numbers code',
-                                                 variable=self.selected
+                                                 variable=self.selected,
+                                                 command=self.radiobutton_event
                                                  )
         self.code_3_numbers.grid(column=0, row=1, padx=(0, 5), pady=(20, 30))
         self.code_4_numbers = ctk.CTkRadioButton(self.frame_code_selection,
                                                  text='4 numbers',
                                                  value='4 numbers code',
                                                  variable=self.selected,
+                                                 command=self.radiobutton_event
                                                  )
         self.code_4_numbers.grid(column=1, row=1, padx=(5, 5), pady=(20, 30))
         self.code_eia96 = ctk.CTkRadioButton(self.frame_code_selection,
                                              text='EIA96',
                                              value='EIA96 code',
                                              variable=self.selected,
+                                             command=self.radiobutton_event
                                              )
         self.code_eia96.grid(column=2, row=1, padx=(5, 5), pady=(20, 30))
         self.code_below_10 = ctk.CTkRadioButton(self.frame_code_selection,
                                                 text='below 10Ω',
                                                 value='below 10',
                                                 variable=self.selected,
+                                                command=self.radiobutton_event
                                                 )
         self.code_below_10.grid(column=3, row=1, padx=5, pady=(20, 30))
 
@@ -366,9 +370,22 @@ class FrameSMD(ctk.CTkFrame):
                                          )
         self.button_calc.grid(column=2, row=3, padx=10, pady=5, sticky=ctk.SE)
 
+    def radiobutton_event(self):
+        selected_code = self.selected.get()
+        if selected_code == '3 numbers code':
+            self.code_entry.configure(placeholder_text='e.g.: 102')
+        elif selected_code == '4 numbers code':
+            self.code_entry.configure(placeholder_text='e.g.: 1002')
+        elif selected_code == 'EIA96 code':
+            self.code_entry.configure(placeholder_text='e.g.: B12 or 12B')
+        elif selected_code == 'below 10':
+            self.code_entry.configure(placeholder_text='e.g.: 2R1 or 2R10')
+
+
+
     def button_action(self):
 
-        entry_value = self.code.get()
+        entry_value = self.code_entry.get()
 
         pattern_eia69_2 = r"^([A-FSRXY]|[a-fsrxy])((9[0-6])|([0-8][0-6]))\b"
         pattern_eia69_1 = r"^((60)|([0-5][0-9]))([A-FSRXY]|[a-fsrxy])\b"
@@ -416,29 +433,41 @@ class FrameCapacitor(ctk.CTkFrame):
 
         # Create label with name for Capacitor's frame
         frames_name = ctk.CTkLabel(self, text='Capacitors', font=('Ubuntu Light', 12))
-        frames_name.grid(column=0, row=0, sticky=tkinter.SW, padx=10)
+        frames_name.grid(column=0, row=0, sticky=ctk.SW, padx=10)
 
         # create label widget for entry widget
-        self.label = ctk.CTkLabel(self, text='Enter resistor code', font=('Ubuntu Light', 18))
+        self.label = ctk.CTkLabel(self, text='Enter capacitor code', font=('Ubuntu Light', 18))
         self.label.grid(column=0, row=1, pady=10, padx=20, sticky=ctk.W)
 
         # create entry widget
-        self.code = tk.StringVar()
         self.code_entry = ctk.CTkEntry(self,
-                                       textvariable=self.code,
                                        height=35,
                                        fg_color='white',
                                        text_color='black',
                                        font=('Ubuntu Light', 18),
                                        corner_radius=10,
-                                       width=130
+                                       width=180,
+                                       placeholder_text='e.g.: 102',
+                                       placeholder_text_color='light grey'
                                        )
         self.code_entry.grid(column=1, row=1, padx=10, pady=10, stick=ctk.E)
+
+        # Create segment button widget
+        self.segmented_button_var = ctk.StringVar(value="10pF or more")
+        self.segment_button = ctk.CTkSegmentedButton(self,
+                                                     values=["10pF or more", "below 10pF"],
+                                                     corner_radius=10,
+                                                     font=('Ubuntu Light', 15, 'bold'),
+                                                     variable=self.segmented_button_var,
+                                                     height=40,
+                                                     command=self.segment_button_event
+                                                     )
+        self.segment_button.grid(column=0, row=2, padx=10, pady=10, columnspan=2)
 
         # Create result frame
         self.result_frame = ctk.CTkFrame(self, fg_color='#255B12', corner_radius=10, height=70, width=425)
         self.result_frame.grid_propagate(False)
-        self.result_frame.grid(column=0, row=3, padx=10, pady=(5, 5), columnspan=2, sticky=ctk.S)
+        self.result_frame.grid(column=0, row=4, padx=10, pady=(5, 5), columnspan=2, sticky=ctk.S)
 
         # create label with result frame name
         self.result_frame_name = ctk.CTkLabel(self.result_frame,
@@ -464,10 +493,29 @@ class FrameCapacitor(ctk.CTkFrame):
                                          height=50,
                                          command=self.button_action
                                          )
-        self.button_calc.grid(column=1, row=2, padx=10, pady=(68, 5), sticky=ctk.SE)
+        self.button_calc.grid(column=1, row=3, padx=10, pady=(10, 5), sticky=ctk.SE)
+
+    def segment_button_event(self, event):
+        choice = self.segmented_button_var.get()
+
+        if choice == "10pF or more":
+            self.code_entry.configure(placeholder_text='e.g.: 104')
+        elif choice == "below 10pF":
+            self.code_entry.configure(placeholder_text='e.g.: 1R0')
 
     def button_action(self):
-        ...
+        choice = self.segmented_button_var.get()
+        entered_value = self.code_entry.get()
+
+        if choice == "10pF or more":
+            result = calculates.capacitors_calc(entered_value)
+            self.code_entry.delete(0, ctk.END)
+            self.result_label.configure(text=result)
+
+        elif choice == "below 10pF":
+            result = calculates.capacitors_calc_below_10p(entered_value)
+            self.code_entry.delete(0, ctk.END)
+            self.result_label.configure(text=result)
 
 
 if __name__ == "__main__":
