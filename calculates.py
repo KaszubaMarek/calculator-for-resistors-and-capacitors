@@ -18,7 +18,7 @@ def resistance_calculation(selected_bands: dict) -> str:
                             * 10 ** BANDS_COLORS[selected_bands['multiplier']][0]
         tolerance_value: str = str(TOLERANCE_COLORS[selected_bands['tolerance']]) + '%'
         print('4 band code')
-        result = weight_determination(resistance)
+        result = res_weight_determination(resistance)
 
         return result + tolerance_value
     else:
@@ -29,11 +29,11 @@ def resistance_calculation(selected_bands: dict) -> str:
                             * 10 ** BANDS_COLORS[selected_bands['multiplier']][0]
         tolerance_value: str = str(TOLERANCE_COLORS[selected_bands['tolerance']]) + '%'
         print('5 band code')
-        result = weight_determination(resistance)
+        result = res_weight_determination(resistance)
         return result + tolerance_value
 
 
-def weight_determination(value: float) -> str:
+def res_weight_determination(value: float) -> str:
     kilo: int = 10 ** 3
     mega: int = 10 ** 6
     giga: int = 10 ** 9
@@ -59,7 +59,7 @@ def smd_3_numb_code_calc(entry_value: str) -> str:
     value = int(entry_value[:2])
     multiplier = int(entry_value[2])
     resistance = value * 10 ** multiplier
-    result = weight_determination(resistance)
+    result = res_weight_determination(resistance)
     return result + '5%'
 
 
@@ -67,7 +67,7 @@ def smd_4_numb_code_calc(entry_value: str) -> str:
     value = int(entry_value[:3])
     multiplier = int(entry_value[3])
     resistance = value * 10 ** multiplier
-    result = weight_determination(resistance)
+    result = res_weight_determination(resistance)
     return result + '1%'
 
 
@@ -131,7 +131,7 @@ def smd_eia96_calc(entry_value: str) -> str:
             value: int = values_2_5_10_percent[entry_value[1:]]
             multiplier: int = multipliers[entry_value[0]]
             resistance = value * multiplier
-            result = weight_determination(resistance)
+            result = res_weight_determination(resistance)
             if int(entry_value[1:]) < 25:
                 tolerance: str = '2%'
             elif int(entry_value[1:]) < 49:
@@ -145,26 +145,40 @@ def smd_eia96_calc(entry_value: str) -> str:
             value: int = values_1_percent[entry_value[:2]]
             multiplier: int = multipliers[entry_value[2]]
             resistance = value * multiplier
-            result = weight_determination(resistance)
+            result = res_weight_determination(resistance)
             tolerance: str = '1%'
 
             return result + tolerance
 
 
 def capacitors_calc(entry_value: str) -> str:
-    base: int = 10 ** -12
-    piko: str = 'pF'
-    nano: str = 'nF'
-    mikro: str = 'uF'
 
     value: int = int(entry_value[:2])
     multiplier: int = int(entry_value[2])
 
-    result = value * base * 10 ** multiplier
+    capacity: float = value * 10 ** multiplier
+    result = cap_weight_determination(capacity, multiplier)
 
     return result
 
 
-# 1R0 - 1R 5%
-# 0R47 - 0,47R 1%
-# 0R01 - 0,01R 1%
+def capacitors_calc_below_10p(entry_value: str) -> str:
+    result = entry_value.upper().replace('R', '.')
+
+    return result + 'pF'
+
+
+def cap_weight_determination(value: int, multiplier: int) -> str:
+
+    if multiplier in (0, 1):
+        return str(value) + ' pF'
+    elif multiplier in (2, 3, 4):
+        capacity = round(value * 10 ** -3)
+
+        return str(capacity) + ' nF'
+    else:
+        capacity = round(value * 10 ** -6)
+        return str(capacity) + ' µF'
+
+
+
