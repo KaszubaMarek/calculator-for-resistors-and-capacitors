@@ -211,15 +211,14 @@ class FrameTHT(ctk.CTkFrame):
                                               text='Result',
                                               font=('Ubuntu Light', 20, 'bold')
                                               )
-        self.result_frame_name.grid(column=0, row=0, padx=10, sticky=ctk.W)
+        self.result_frame_name.grid(column=0, row=0, padx=10, sticky=ctk.NW)
 
         # Create label with result
         self.result_label = ctk.CTkLabel(self.result_frame,
                                          font=('Ubuntu Light', 35, 'bold'),
-                                         text='',
-                                         width=400
+                                         text=''
                                          )
-        self.result_label.grid(column=1, row=0, rowspan=2, stick=ctk.NS, pady=20)
+        self.result_label.grid(column=1, row=0, rowspan=2, padx=90, pady=20)
 
         # for widget in self.winfo_children():
         #     widget.grid(padx=14)
@@ -349,15 +348,15 @@ class FrameSMD(ctk.CTkFrame):
                                               text='Result',
                                               font=('Ubuntu Light', 17, 'bold')
                                               )
-        self.result_frame_name.grid(column=0, row=0, padx=10, sticky=ctk.W)
+        self.result_frame_name.grid(column=0, row=0, padx=10, sticky=ctk.NW)
 
         # Create label with result
         self.result_label = ctk.CTkLabel(self.result_frame,
-                                         font=('Ubuntu Light', 18, 'bold'),
+                                         font=('Ubuntu Light', 20, 'bold'),
                                          text='',
                                          width=50
                                          )
-        self.result_label.grid(column=1, row=1, sticky=ctk.E)
+        self.result_label.grid(column=1, row=0, padx=40, pady=20)
 
         # Button calculation for SMD resistors
         self.button_calc = ctk.CTkButton(self,
@@ -371,17 +370,32 @@ class FrameSMD(ctk.CTkFrame):
         self.button_calc.grid(column=2, row=3, padx=10, pady=5, sticky=ctk.SE)
 
     def radiobutton_event(self):
+
+        def reset_entry_widget():
+            self.code_entry.delete(0, ctk.END)
+            self.result_label.focus_set()
+
         selected_code = self.selected.get()
         if selected_code == '3 numbers code':
+            if self.code_entry.get:
+                reset_entry_widget()
+
             self.code_entry.configure(placeholder_text='e.g.: 102')
         elif selected_code == '4 numbers code':
+            if self.code_entry.get:
+                reset_entry_widget()
+
             self.code_entry.configure(placeholder_text='e.g.: 1002')
         elif selected_code == 'EIA96 code':
+            if self.code_entry.get:
+                reset_entry_widget()
+
             self.code_entry.configure(placeholder_text='e.g.: B12 or 12B')
         elif selected_code == 'below 10':
+            if self.code_entry.get:
+                reset_entry_widget()
+
             self.code_entry.configure(placeholder_text='e.g.: 2R1 or 2R10')
-
-
 
     def button_action(self):
 
@@ -474,17 +488,16 @@ class FrameCapacitor(ctk.CTkFrame):
                                               text='Result',
                                               font=('Ubuntu Light', 17, 'bold')
                                               )
-        self.result_frame_name.grid(column=0, row=0, padx=10, sticky=ctk.W)
+        self.result_frame_name.grid(column=0, row=0, padx=10, sticky=ctk.NW)
 
         # Create label with result
         self.result_label = ctk.CTkLabel(self.result_frame,
-                                         font=('Ubuntu Light', 18, 'bold'),
-                                         text='',
-                                         width=50
+                                         font=('Ubuntu Light', 20, 'bold'),
+                                         text=''
                                          )
-        self.result_label.grid(column=1, row=1, sticky=ctk.E)
+        self.result_label.grid(column=1, row=0, padx=110, pady=20, rowspan=2, sticky=ctk.NS)
 
-        # Button calculation for SMD resistors
+        # Button calculation for capacitors
         self.button_calc = ctk.CTkButton(self,
                                          text='Calculate',
                                          font=('Ubuntu Light', 17, 'bold'),
@@ -499,23 +512,41 @@ class FrameCapacitor(ctk.CTkFrame):
         choice = self.segmented_button_var.get()
 
         if choice == "10pF or more":
+            if self.code_entry.get:
+                self.code_entry.delete(0, ctk.END)
+                self.result_label.focus_set()
+
             self.code_entry.configure(placeholder_text='e.g.: 104')
         elif choice == "below 10pF":
+            if self.code_entry.get:
+                self.code_entry.delete(0, ctk.END)
+                self.result_label.focus_set()
+
             self.code_entry.configure(placeholder_text='e.g.: 1R0')
 
     def button_action(self):
+
+        pattern_3_num = r"^[1-9][0-9][0-9]\b"
+        pattern_below_10p = r"([0-9][Rr][0-9][0-9]\b)|([0-9][Rr][0-9]\b)"
+
         choice = self.segmented_button_var.get()
         entered_value = self.code_entry.get()
 
         if choice == "10pF or more":
-            result = calculates.capacitors_calc(entered_value)
-            self.code_entry.delete(0, ctk.END)
-            self.result_label.configure(text=result)
+            regex_result = re.match(pattern_3_num, entered_value)
+            if regex_result:
+                result = calculates.capacitors_calc(entered_value)
+                self.result_label.configure(text=result)
+            else:
+                app.create_toplevel(text='Entered value is incorrect')
 
         elif choice == "below 10pF":
-            result = calculates.capacitors_calc_below_10p(entered_value)
-            self.code_entry.delete(0, ctk.END)
-            self.result_label.configure(text=result)
+            regex_result = re.match(pattern_below_10p, entered_value)
+            if regex_result:
+                result = calculates.capacitors_calc_below_10p(entered_value)
+                self.result_label.configure(text=result)
+            else:
+                app.create_toplevel(text='Entered value is incorrect')
 
 
 if __name__ == "__main__":
