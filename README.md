@@ -10,3 +10,7 @@ Second part is for smd resistorsand make calculete resistance for resistors mark
 - EIC96 code
 - code for resistance below 10 ohms
 Third part is for calculates capacity for different types of capacitors.
+
+customtkinter Version: 5.0.3
+Python Version 3.10.7
+
