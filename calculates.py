@@ -41,18 +41,18 @@ def res_weight_determination(value: float) -> str:
 
     if value >= tera:
         result = value/tera
-        return str(result) + ' TΩ  '
+        return str(result) + 'TΩ '
     elif value >= giga:
         result = value/giga
-        return str(result) + ' GΩ  '
+        return str(result) + 'GΩ '
     elif value >= mega:
         result = value/mega
-        return str(result) + ' MΩ  '
+        return str(result) + 'MΩ '
     elif value >= kilo:
         result = value/kilo
-        return str(result) + ' kΩ  '
+        return str(result) + 'kΩ '
     else:
-        return str(value) + ' Ω  '
+        return str(value) + 'Ω '
 
 
 def smd_3_numb_code_calc(entry_value: str) -> str:
@@ -77,7 +77,7 @@ def smd_below_10_ohm_calc(entry_value: str) -> str:
         tolerance: str = '1%'
     else:
         tolerance = '5%'
-    return str(result) + ' Ω  ' + tolerance
+    return str(result) + 'Ω ' + tolerance
 
 
 def smd_eia96_calc(entry_value: str) -> str:
@@ -171,14 +171,15 @@ def capacitors_calc_below_10p(entry_value: str) -> str:
 def cap_weight_determination(value: int, multiplier: int) -> str:
 
     if multiplier in (0, 1):
-        return str(value) + ' pF'
+        return str(value) + 'pF'
     elif multiplier in (2, 3, 4):
         capacity = round(value * 10 ** -3)
-
-        return str(capacity) + ' nF'
+        print(capacity)
+        return str(capacity) + 'nF'
     else:
         capacity = round(value * 10 ** -6)
-        return str(capacity) + ' µF'
+        return str(capacity) + 'µF'
 
+print(cap_weight_determination(470_000, 4))
 
 
