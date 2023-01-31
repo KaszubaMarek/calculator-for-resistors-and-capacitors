@@ -13,7 +13,7 @@ class App(ctk.CTk):
         super().__init__()
 
         # configure window
-        self.title("test")
+        self.title("Resistors and Capacitors Calculator")
         self.geometry(f"{1000}x{650}")
         # self.resizable(False, False)
 
@@ -82,8 +82,8 @@ class FrameTHT(ctk.CTkFrame):
         self.label_band_4 = ctk.CTkLabel(self, text='Fourth Band\n(Multiplier)', font=('Ubuntu Light', 12, 'bold'))
         self.label_band_4.grid(column=3, row=1)
 
-        self.label_band_1 = ctk.CTkLabel(self, text='Fifth Band\n(eTolerance)', font=('Ubuntu Light', 12, 'bold'))
-        self.label_band_1.grid(column=4, row=1)
+        self.label_band_5 = ctk.CTkLabel(self, text='Fifth Band\n(Tolerance)', font=('Ubuntu Light', 12, 'bold'))
+        self.label_band_5.grid(column=4, row=1)
 
         # create a combobox
         cb_grid_options = {'row': 2, 'sticky': tk.NS}
@@ -244,10 +244,16 @@ class FrameTHT(ctk.CTkFrame):
     def change_state(self):
         if self.selected_code.get() == '4':
             self.combobox_band_3.configure(state=ctk.DISABLED)
+            self.label_band_4.configure(text='Third Band\n(Multiplier)')
+            self.label_band_5.configure(text='Fourth Band\n(Tolerance)')
+            self.label_band_3.configure(text='')
             self.selected_colors['third_digit'] = 'No band'
             print(self.selected_colors)
         elif self.selected_code.get() == '5':
             self.combobox_band_3.configure(state='readonly')
+            self.label_band_3.configure(text='Third Band\n(Optional)')
+            self.label_band_4.configure(text='Fourth Band\n(Multiplier)')
+            self.label_band_5.configure(text='Fifth Band\n(Tolerance)')
             self.combobox_band_3.set('Select colour')
 
     def color_selected_1(self, event):
